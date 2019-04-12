@@ -97,6 +97,8 @@ module.exports = function(sequelize, DataTypes) {
 };
 ```
 
+Go ahead and associate your new comments model and the existing post model in a similar fashion. This is a one to many relationship. One post can have many comments, but each comment belongs to a single post.
+
 ### Create a comment
 
 Now, run the migration for the model and test the model's functionality. This can be done in a separate file. An example:
