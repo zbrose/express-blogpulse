@@ -4,12 +4,9 @@ module.exports = function(sequelize, DataTypes) {
     title: DataTypes.STRING,
     content: DataTypes.TEXT,
     authorId: DataTypes.INTEGER
-  }, {
-    classMethods: {
-      associate: function(models) {
-        models.post.belongsTo(models.author);
-      }
-    }
   });
+  post.associate = function(models) {
+    models.post.belongsTo(models.author);
+  }
   return post;
 };

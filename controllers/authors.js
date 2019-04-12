@@ -5,12 +5,12 @@ var router = express.Router();
 // GET /authors - display all authors
 router.get('/', function(req, res) {
   db.author.findAll()
-        .then(function(authors) {
-          res.render('authors/index', { authors: authors });
-        })
-        .catch(function(error) {
-          res.status(400).render('main/404');
-        });
+  .then(function(authors) {
+    res.render('authors/index', { authors: authors });
+  })
+  .catch(function(error) {
+    res.status(400).render('main/404');
+  });
 });
 
 // POST /authors - create a new author

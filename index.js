@@ -27,6 +27,7 @@ app.get('/', function(req, res) {
   }).then(function(posts) {
     res.render('main/index', { posts: posts });
   }).catch(function(error) {
+    console.log(error)
     res.status(400).render('main/404');
   });
 });
