@@ -14,7 +14,7 @@ We'll be using an existing application that includes two models, several routes,
 * Run `npm install` to install dependencies
   * Use `nodemon` to start your application
 * Setup your database (this app already has two existing models)
-  * Run `createdb blogpulse_development` to create the database
+  * Run `createdb blogpulse_dev` to create the database
   * Run `sequelize db:migrate` to run migrations
   * Run `sequelize db:seed:all` to populate the database with 2 authors and 2 posts
 
@@ -22,16 +22,21 @@ We'll be using an existing application that includes two models, several routes,
 
 After setup, **STOP**. You're using an existing application, so make sure to read the code and ensure what the application does. Here is some information about the current setup.
 
-* Routes
-  * `GET /` - home page that lists all posts
-  * `GET /authors` - authors page that lists all authors
-  * `POST /authors` - creates a new author, then redirects back to `GET /authors`
-  * `GET /authors/new` - page that has a form for creating a new author
-  * `GET /authors/:id` - page that shows a specific author and their posts
-  * `POST /posts` - creates a new post, then redirects back to `GET /`
-  * `GET /posts/new` - page that has a form for creating a new post
-  * `GET /posts/:id` - page that shows a specific post and the author
-* Models
+#### Routes
+
+| Method | Path | Purpose |
+| ------ | -------------- | -------------------------------- |
+| GET | `/` | home page that lists all posts |
+| GET | `/authors` | authors page that lists all authors |
+| POST | `/authors` | creates a new author, then redirects back to `GET /authors` |
+| GET | `/authors/new` | page that has a form for creating a new author |
+| GET | `/authors/:id` | page that shows a specific author and their posts |
+| POST | `/posts` | creates a new post, then redirects back to `GET /` |
+| GET | `/posts/new` | page that has a form for creating a new post |
+| GET | `/posts/:id` | page that shows a specific post and the author |
+
+#### Models
+  
   * `author`
     * Attributes: `firstName`, `lastName`, `bio`
     * Associations: Has many posts
@@ -50,7 +55,51 @@ After setup, **STOP**. You're using an existing application, so make sure to rea
 
 In order to add comments, create a Sequelize model to store comments. It's recommended that you name this model `comment`. It will store three attributes: the name of the person creating the comment (as a string), the content of the comment (as text), and the post that the comment belongs to (as an integer)
 
-Once this model has been created, **add the associations between comments the posts**. Then, run the migration for the model and test the model's functionality. This can be done in a separate file. An example:
+Once this model has been created, **add the associations between comments the posts**. This may look similar to how Authors and Posts are related in the existing code in this app. Note the associate section in the models for both `post` and `author`.
+
+**models/post.js**
+
+```js
+module.exports = function(sequelize, DataTypes) {
+  var post = sequelize.define('post', {
+    title: DataTypes.STRING,
+    content: DataTypes.TEXT,
+    authorId: DataTypes.INTEGER
+  }, {
+    classMethods: {
+      associate: function(models) {
+        // A post belongs to an author
+        models.post.belongsTo(models.author);
+      }
+    }
+  });
+  return post;
+};
+```
+
+**models/author.js**
+
+```js
+module.exports = function(sequelize, DataTypes) {
+  var author = sequelize.define('author', {
+    firstName: DataTypes.STRING,
+    lastName: DataTypes.STRING,
+    bio: DataTypes.TEXT
+  }, {
+    classMethods: {
+      associate: function(models) {
+        // An author has many (zero or more) posts
+        models.author.hasMany(models.post);
+      }
+    }
+  });
+  return author;
+};
+```
+
+### Create a comment
+
+Now, run the migration for the model and test the model's functionality. This can be done in a separate file. An example:
 
 **dbTest.js**
 
