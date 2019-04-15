@@ -1,6 +1,6 @@
-var express = require('express');
-var db = require('../models');
-var router = express.Router();
+var express = require('express')
+var db = require('../models')
+var router = express.Router()
 
 // POST /articles - create a new post
 router.post('/', function(req, res) {
@@ -10,23 +10,23 @@ router.post('/', function(req, res) {
     authorId: req.body.authorId
   })
   .then(function(post) {
-    res.redirect('/');
+    res.redirect('/')
   })
   .catch(function(error) {
-    res.status(400).render('main/404');
-  });
-});
+    res.status(400).render('main/404')
+  })
+})
 
 // GET /articles/new - display form for creating new articles
 router.get('/new', function(req, res) {
   db.author.findAll()
   .then(function(authors) {
-    res.render('articles/new', { authors: authors });
+    res.render('articles/new', { authors: authors })
   })
   .catch(function(error) {
-    res.status(400).render('main/404');
-  });
-});
+    res.status(400).render('main/404')
+  })
+})
 
 // GET /articles/:id - display a specific post and its author
 router.get('/:id', function(req, res) {
@@ -35,14 +35,14 @@ router.get('/:id', function(req, res) {
     include: [db.author]
   })
   .then(function(article) {
-    if (!article) throw Error();
+    if (!article) throw Error()
     console.log(article.author)
-    res.render('articles/show', { article: article });
+    res.render('articles/show', { article: article })
   })
   .catch(function(error) {
     console.log(error)
-    res.status(400).render('main/404');
-  });
-});
+    res.status(400).render('main/404')
+  })
+})
 
-module.exports = router;
+module.exports = router
