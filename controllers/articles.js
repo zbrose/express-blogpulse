@@ -2,9 +2,9 @@ var express = require('express');
 var db = require('../models');
 var router = express.Router();
 
-// POST /posts - create a new post
+// POST /articles - create a new post
 router.post('/', function(req, res) {
-  db.post.create({
+  db.article.create({
     title: req.body.title,
     content: req.body.content,
     authorId: req.body.authorId
@@ -17,28 +17,30 @@ router.post('/', function(req, res) {
   });
 });
 
-// GET /posts/new - display form for creating new posts
+// GET /articles/new - display form for creating new articles
 router.get('/new', function(req, res) {
   db.author.findAll()
   .then(function(authors) {
-    res.render('posts/new', { authors: authors });
+    res.render('articles/new', { authors: authors });
   })
   .catch(function(error) {
     res.status(400).render('main/404');
   });
 });
 
-// GET /posts/:id - display a specific post and its author
+// GET /articles/:id - display a specific post and its author
 router.get('/:id', function(req, res) {
-  db.post.find({
+  db.article.findOne({
     where: { id: req.params.id },
     include: [db.author]
   })
-  .then(function(post) {
-    if (!post) throw Error();
-    res.render('posts/show', { post: post });
+  .then(function(article) {
+    if (!article) throw Error();
+    console.log(article.author)
+    res.render('articles/show', { article: article });
   })
   .catch(function(error) {
+    console.log(error)
     res.status(400).render('main/404');
   });
 });

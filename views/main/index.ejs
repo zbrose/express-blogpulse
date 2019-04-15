@@ -2,14 +2,14 @@
   <div class="col-sm-8">
     <h1>Latest Posts from BlogPulse</h1>
 
-    <% posts.forEach(function(post) { %>
+    <% articles.forEach(function(a) { %>
       <div class="well">
         <h2>
-          <a href="/posts/<%= post.id %>"><%= post.title %></a>
-          <small>by <%= post.author.getFullName() %></small>
+          <a href="/articles/<%= a.id %>"><%= a.title %></a>
+          <small>by <%= a.author.getFullName() %></small>
         </h2>
         <p>
-          <strong><%= moment(post.createdAt).calendar() %></strong>
+          <strong><%= moment(a.createdAt).calendar() %></strong>
         </p>
       </div>
     <% }); %>

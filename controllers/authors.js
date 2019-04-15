@@ -20,12 +20,12 @@ router.post('/', function(req, res) {
     lastName: req.body.lastName,
     bio: req.body.bio
   })
-        .then(function(author) {
-          res.redirect('/authors');
-        })
-        .catch(function(error) {
-          res.status(400).render('main/404');
-        });
+  .then(function(author) {
+    res.redirect('/authors');
+  })
+  .catch(function(error) {
+    res.status(400).render('main/404');
+  });
 });
 
 // GET /authors/new - display form for creating a new author
@@ -35,17 +35,15 @@ router.get('/new', function(req, res) {
 
 // GET /authors/:id - display a specific author and their posts
 router.get('/:id', function(req, res) {
-  db.author.find({
-    where: { id: req.params.id },
-    include: [db.post]
+  db.author.findOne({
+    include: [db.article],
+    where: {id: req.params.id}
+  }).then(function(author) {
+    res.render('authors/show', { author: author })
+  }).catch(function(error) {
+    console.log(error)
+    res.status(400).render('main/404')
   })
-        .then(function(author) {
-          if (!author) throw Error();
-          res.render('authors/show', { author: author });
-        })
-        .catch(function(error) {
-          res.status(400).render('main/404');
-        });
 });
 
 module.exports = router;

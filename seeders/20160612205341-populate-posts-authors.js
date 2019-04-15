@@ -22,7 +22,7 @@ module.exports = {
         updatedAt: new Date()
       }
     ], { returning: true }).then(function(authors) {
-      return queryInterface.bulkInsert('posts', [
+      return queryInterface.bulkInsert('articles', [
         { title: 'Bike usage in Seattle grows as city plans new lanes.',
           content: 'Bike lanes in the downtown area, as well as the surrounding areas, are being installed.',
           authorId: authors[0].id,

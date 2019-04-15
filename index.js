@@ -20,21 +20,21 @@ app.use(function(req, res, next) {
   next();
 });
 
-// GET / - display all posts and their authors
+// GET / - display all articles and their authors
 app.get('/', function(req, res) {
-  db.post.findAll({
+  db.article.findAll({
     include: [db.author]
-  }).then(function(posts) {
-    res.render('main/index', { posts: posts });
+  }).then(function(articles) {
+    res.render('main/index', { articles: articles });
   }).catch(function(error) {
     console.log(error)
     res.status(400).render('main/404');
-  });
+  })
 });
 
-// bring in authors and posts controllers
+// bring in authors and articles controllers
 app.use('/authors', require('./controllers/authors'));
-app.use('/posts', require('./controllers/posts'));
+app.use('/articles', require('./controllers/articles'));
 
 var server = app.listen(process.env.PORT || 3000, function() {
   rowdy.print();
