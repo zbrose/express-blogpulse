@@ -4,7 +4,7 @@ To practice 1:M associations, we'll be adding comment functionality to an existi
 
 #### Backstory: BlogPulse
 
-Congrats! You have been hired by BlogPulse, an up-and-coming blog marketed as a local version of [Buzzfeed](https://www.buzzfeed.com/). Through BlogPulse, anyone can sign up to become a contributor, and contributors can create posts relating to issues and events in the Puget Sound area. However, we need you to add comment functionality to this site.
+Congrats! You have been hired by BlogPulse, an up-and-coming blog marketed as a local version of [Buzzfeed](https://www.buzzfeed.com/). Through BlogPulse, anyone can sign up to become a contributor, and contributors can create articles relating to issues and events in the Puget Sound area. However, we need you to add comment functionality to this site.
 
 ## Getting Started
 
@@ -16,7 +16,7 @@ We'll be using an existing application that includes two models, several routes,
 * Setup your database (this app already has two existing models)
   * Run `createdb blogpulse_dev` to create the database
   * Run `sequelize db:migrate` to run migrations
-  * Run `sequelize db:seed:all` to populate the database with 2 authors and 2 posts
+  * Run `sequelize db:seed:all` to populate the database with 2 authors and 2 articles
 
 #### Read the Code
 
@@ -26,78 +26,80 @@ After setup, **STOP**. You're using an existing application, so make sure to rea
 
 | Method | Path | Purpose |
 | ------ | -------------- | -------------------------------- |
-| GET | `/` | home page that lists all posts |
+| GET | `/` | home page that lists all articles |
 | GET | `/authors` | authors page that lists all authors |
 | POST | `/authors` | creates a new author, then redirects back to `GET /authors` |
 | GET | `/authors/new` | page that has a form for creating a new author |
-| GET | `/authors/:id` | page that shows a specific author and their posts |
-| POST | `/posts` | creates a new post, then redirects back to `GET /` |
-| GET | `/posts/new` | page that has a form for creating a new post |
-| GET | `/posts/:id` | page that shows a specific post and the author |
+| GET | `/authors/:id` | page that shows a specific author and their articles |
+| POST | `/articles` | creates a new article, then redirects back to `GET /` |
+| GET | `/articles/new` | page that has a form for creating a new article |
+| GET | `/articles/:id` | page that shows a specific article and the author |
 
 #### Models
   
   * `author`
     * Attributes: `firstName`, `lastName`, `bio`
-    * Associations: Has many posts
-  * `post`
+    * Associations: Has many articles
+  * `article`
     * Attributes: `title`, `content`, `authorId`
     * Associations: Belongs to one author
 
 ## User Stories
 
-* As a user, I want to comment on a post in order to express my opinions.
-* As a user, I want to view comments on a post in order to see my community's opinions about a post.
+* As a user, I want to comment on an article in order to express my opinions.
+* As a user, I want to view comments on an article in order to see my community's opinions about an article.
 
 ## Requirements
 
 #### Part 1: Create a Comment model
 
-In order to add comments, create a Sequelize model to store comments. It's recommended that you name this model `comment`. It will store three attributes: the name of the person creating the comment (as a string), the content of the comment (as text), and the post that the comment belongs to (as an integer)
+In order to add comments, create a Sequelize model to store comments. It's recommended that you name this model `comment`. It will store three attributes: the name of the person creating the comment (as a string), the content of the comment (as text), and the article that the comment belongs to (as an integer)
 
-Once this model has been created, **add the associations between comments the posts**. This may look similar to how Authors and Posts are related in the existing code in this app. Note the associate section in the models for both `post` and `author`.
+Once this model has been created, **add the associations between comments the articles**. This may look similar to how Authors and Articles are related in the existing code in this app. Note the associate section in the models for both `article` and `author`.
 
-**models/post.js**
+**models/article.js**
 
 ```js
-module.exports = function(sequelize, DataTypes) {
-  var post = sequelize.define('post', {
+'use strict'
+module.exports = (sequelize, DataTypes) => {
+  const article = sequelize.define('article', {
     title: DataTypes.STRING,
     content: DataTypes.TEXT,
     authorId: DataTypes.INTEGER
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // A post belongs to an author
-        models.post.belongsTo(models.author);
-      }
-    }
-  });
-  return post;
-};
+  }, {})
+  article.associate = function(models) {
+    // associations can be defined here
+    models.article.belongsTo(models.author)
+  }
+  return article
+}
 ```
 
 **models/author.js**
 
 ```js
-module.exports = function(sequelize, DataTypes) {
-  var author = sequelize.define('author', {
+'use strict'
+module.exports = (sequelize, DataTypes) => {
+  const author = sequelize.define('author', {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     bio: DataTypes.TEXT
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // An author has many (zero or more) posts
-        models.author.hasMany(models.post);
-      }
-    }
-  });
-  return author;
-};
+  }, {})
+
+  author.associate = function(models) {
+    // associations can be defined here
+    models.author.hasMany(models.article)
+  }
+
+  author.prototype.getFullName = function(){
+    return this.firstName + ' ' + this.lastName
+  }
+  return author
+}
+
 ```
 
-Go ahead and associate your new comments model and the existing post model in a similar fashion. This is a one to many relationship. One post can have many comments, but each comment belongs to a single post.
+Go ahead and associate your new comments model and the existing article model in a similar fashion. This is a one to many relationship. One article can have many comments, but each comment belongs to a single article.
 
 ### Create a comment
 
@@ -106,43 +108,44 @@ Now, run the migration for the model and test the model's functionality. This ca
 **dbTest.js**
 
 ```js
-var db = require('./models');
+var db = require('./models')
 
 db.comment.create({
   name: 'Paul Allen',
   content: 'This is really neat! Thanks for posting.',
-  postId: 1
-}).then(function(comment) {
-  console.log(comment.get());
-});
+  articleId: 1
+})
+.then(function(comment) {
+  console.log(comment.get())
+})
 ```
 
-Be sure to also test querying comments off of posts, which should verify that the association exists. Here's an example, once you've created a comment:
+Be sure to also test querying comments off of articles, which should verify that the association exists. Here's an example, once you've created a comment:
 
 ```js
-var db = require('./models');
+var db = require('./models')
 
-db.post.find({
+db.article.findOne({
   where: { id: 1 },
   include: [db.comment]
-}).then(function(post) {
-  // by using eager loading, the post model should have a comments key
-  console.log(post.comments);
-});
+}).then(function(article) {
+  // by using eager loading, the article model should have a comments key
+  console.log(article.comments)
+})
 ```
 
 #### Part 2: Integrate the model with the app
 
 Now that the model has been created, you'll want to add the ability to create and view comments to the rest of the application. Here is an approach that can be taken:
 
-* Add the ability to view comments on `GET /posts/:id`.
+* Add the ability to view comments on `GET /articles/:id`.
   * See the example above on how to include the comments, then use EJS to render each comment's information on the page. Make sure you have a comment in the database you can use to verify this functionality.
-* On the same page (`GET /posts/:id`), create a form to submit a new comment. Note that we don't *necessarily* need to render a form on a separate page - most sites have a comment form on the same page.
-  * Include the necessary attributes, `name` and `content`. Feel free to look at the forms for authors and posts as examples.
-  * Create a new route to receive this form data. This will be the action for your form. You could either make a separate comments controller at `POST /comments`, (especially good if you plan on having more comments-related routes in the future) or you could define the route in the post controller since comments are related to posts `POST /posts/:id/comments`. This implementation detail is up to you. Note how we're passing the post id in each case - in the form body in the first example vs a param (part of the URL) in the second one.
+* On the same page (`GET /articles/:id`), create a form to submit a new comment. Note that we don't *necessarily* need to render a form on a separate page - most sites have a comment form on the same page.
+  * Include the necessary attributes, `name` and `content`. Feel free to look at the forms for authors and articles as examples.
+  * Create a new route to receive this form data. This will be the action for your form. You could either make a separate comments controller at `POST /comments`, (especially good if you plan on having more comments-related routes in the future) or you could define the route in the articles controller since comments are related to articles `POST /articles/:id/comments`. This implementation detail is up to you. Note how we're passing the article id in each case - in the form body in the first example vs a param (part of the URL) in the second one.
     * Test the route by using your form 
-    * Once you've verified the route is working, redirect back to the post that was commented on for a completely smooth user experience.
-* Verify functionality by creating more authors, posts, and comments. Pay attention to the user experience, and make sure the user can navigate between posts, authors, and comments.
+    * Once you've verified the route is working, redirect back to the article that was commented on for a completely smooth user experience.
+* Verify functionality by creating more authors, articles, and comments. Pay attention to the user experience, and make sure the user can navigate between articles, authors, and comments.
 
 #### Part 3: Styling
 
@@ -150,15 +153,15 @@ When finished with the above, style the application appropriately with CSS. Use 
 
 ## Bonuses
 
-* Add the ability to edit posts
+* Add the ability to edit articles
 * Instead of redirecting to `/authors/new` to create a new author, have the form appear using a Bootstrap modal.
-* Add the ability to create rich text posts and comments using Markdown.
+* Add the ability to create rich text articles and comments using Markdown.
   * Front-end Bootstrap Markdown editor: http://www.codingdrama.com/bootstrap-markdown/
   * A markdown parser for your EJS templates: https://www.npmjs.com/package/marked#usage
 
 ## Deliverables
 
-Here's an example screenshot of the post page, complete with comments. Your finished deliverable will differ and include the desired functionality.
+Here's an example screenshot of the article page, complete with comments. Your finished deliverable will differ and include the desired functionality.
 
 ![Example Comments](./example-comments.jpg)
 
