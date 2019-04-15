@@ -1,37 +1,3 @@
-'use strict';
-module.exports = function(sequelize, DataTypes) {
-  var post = sequelize.define('post', {
-    title: DataTypes.STRING,
-    content: DataTypes.TEXT,
-    authorId: DataTypes.INTEGER
-  });
-  post.associate = function(models) {
-    models.post.belongsTo(models.author);
-  }
-  return post;
-};
-
-
-'use strict';
-module.exports = (sequelize, DataTypes) => {
-  var author = sequelize.define('author', {
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
-    bio: DataTypes.TEXT
-  });
-
-  author.associate = function(models) {
-    models.author.hasMany(models.post);
-  }
-
-  author.prototype.getFullName = function() {
-    return this.firstName + ' ' + this.lastName;
-  }
-
-  return author;
-};
-
-
 # Express BlogPulse
 
 To practice 1:M associations, we'll be adding comment functionality to an existing blog application.
