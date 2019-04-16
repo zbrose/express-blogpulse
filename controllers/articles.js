@@ -17,6 +17,24 @@ router.post('/', function(req, res) {
   })
 })
 
+// PUT /articles
+router.put('/:id', (req, res) => {
+  db.article.update(
+    req.body,
+    {
+      where: { id: req.params.id }
+    }
+  )
+  .then((updatedRows) => {
+    console.log('success', updatedRows)
+    res.redirect('/articles/' + req.params.id)
+  })
+  .catch((err) => {
+    console.log(err)
+    res.render('main/404')
+  })
+})
+
 // GET /articles/new - display form for creating new articles
 router.get('/new', function(req, res) {
   db.author.findAll()
