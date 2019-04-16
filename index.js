@@ -33,6 +33,7 @@ app.get('/', function(req, res) {
 })
 
 // bring in authors and articles controllers
+app.use('/comments', require('./controllers/comments'))
 app.use('/authors', require('./controllers/authors'))
 app.use('/articles', require('./controllers/articles'))
 
