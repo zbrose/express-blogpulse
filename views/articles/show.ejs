@@ -8,4 +8,17 @@
 
 <hr />
 
+<h3>Comments from the Community</h3>
+
+<% if(article.comments && article.comments.length) { %>
+  <% article.comments.forEach((c) => { %>
+    <p>
+      <em>&lsquo;<%= c.content %>&rsquo;</em>
+      &mdash;<%= c.name %>
+    </p>
+  <% }) %>
+<% } else { %>
+  <p>Be the first to comment on this article</p>
+<% } %>
+
 <a href="/">&larr; Back Home</a>
