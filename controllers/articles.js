@@ -28,6 +28,30 @@ router.get('/new', function(req, res) {
   })
 })
 
+// GET /articles/edit/:id - display edit form for articles
+router.get('/edit/:id', (req, res) => {
+  db.article.findOne({
+    where: { id: req.params.id }
+  })
+  .then((foundArticle) => {
+    db.author.findAll()
+    .then((authors) => {
+      res.render('articles/edit', {
+        article: foundArticle,
+        authors: authors
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+      res.render('main/404')
+    })
+  })
+  .catch((err) => {
+    console.log('Error in /articles/edit/:id', err)
+    res.render('main/404')
+  })
+})
+
 // GET /articles/:id - display a specific post and its author
 router.get('/:id', function(req, res) {
   db.article.findOne({
