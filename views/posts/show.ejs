@@ -6,6 +6,12 @@
 
 <p><%= post.content %></p>
 
+<% post.tags.forEach(function(t){ %>
+  <a href="/tags/<%= t.id %>">
+    #<%= t.content %>
+  </a>
+<% }); %>
+
 <hr />
 
 <form action="/posts/<%= post.id %>/comments" method="POST">

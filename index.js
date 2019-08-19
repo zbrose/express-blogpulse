@@ -1,5 +1,4 @@
 var express = require('express');
-var bodyParser = require('body-parser');
 var ejsLayouts = require('express-ejs-layouts');
 var db = require('./models');
 var moment = require('moment');
@@ -8,7 +7,7 @@ var app = express();
 app.set('view engine', 'ejs');
 
 app.use(require('morgan')('dev'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 app.use(ejsLayouts);
 app.use(express.static(__dirname + '/public/'));
 /* middleware that allows us to access the 'moment' library
@@ -35,6 +34,7 @@ app.get('/', function(req, res) {
 // bring in authors and posts controllers
 app.use('/authors', require('./controllers/authors'));
 app.use('/posts', require('./controllers/posts'));
+app.use('/tags', require('./controllers/tags'));
 
 var server = app.listen(process.env.PORT || 3000);
 
