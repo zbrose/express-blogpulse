@@ -1,21 +1,18 @@
 'use strict';
 module.exports = {
-  up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('authors', {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('articles_tags', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
-        type: Sequelize.STRING
+      articleId: {
+        type: Sequelize.INTEGER
       },
-      lastName: {
-        type: Sequelize.STRING
-      },
-      bio: {
-        type: Sequelize.TEXT
+      tagId: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -27,7 +24,7 @@ module.exports = {
       }
     });
   },
-  down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('authors');
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('articles_tags');
   }
 };

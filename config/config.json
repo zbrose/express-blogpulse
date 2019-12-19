@@ -1,17 +1,14 @@
 {
   "development": {
-    "database": "blogpulse_development",
+    "database": "blogpulse",
     "host": "127.0.0.1",
-    "dialect": "postgres"
-  },
-  "test": {
-    "database": "blogpulse_test",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "operatorsAliases": "false"
   },
   "production": {
-    "database": "blogpulse_production",
+    "database": "database_production",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "mysql",
+    "operatorsAliases": "false"
   }
 }

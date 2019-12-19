@@ -1,30 +1,30 @@
-var express = require('express');
-var db = require('../models');
-var router = express.Router();
+var express = require('express')
+var db = require('../models')
+var router = express.Router()
 
-router.get('/', function(req, res){
+router.get('/', (req, res) => {
   db.tag.findAll()
-  .then(function(tags){
-    res.render('tags/index', { tags: tags });
+  .then(tags => {
+    res.render('tags/index', { tags })
   })
-  .catch(function(err){
-    console.log(err);
-    res.render('main/404');
+  .catch(err => {
+    console.log(err)
+    res.render('main/404')
   })
-});
+})
 
-router.get('/:id', function(req, res){
+router.get('/:id', (req, res) => {
   db.tag.findOne({
     where: { id: req.params.id },
-    include: [db.post]
+    include: [db.article]
   })
-  .then(function(tag){
-    res.render('tags/show', { tag: tag });
+  .then(tag => {
+    res.render('tags/show', { tag })
   })
-  .catch(function(err){
-    console.log(err);
-    res.render('main/404');
+  .catch(err => {
+    console.log(err)
+    res.render('main/404')
   })
-});
+})
 
-module.exports = router;
+module.exports = router

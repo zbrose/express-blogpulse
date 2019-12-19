@@ -1,12 +1,12 @@
-<h1><%= post.title %> <small>by <%= post.author.getFullName() %></small></h1>
+<h1><%= article.title %> <small>by <%= article.author.firstName %></small></h1>
 
 <p>
-  <strong><%= moment(post.createdAt).calendar() %></strong>
+  <strong><%= moment(article.createdAt).calendar() %></strong>
 </p>
 
-<p><%= post.content %></p>
+<p><%= article.content %></p>
 
-<% post.tags.forEach(function(t){ %>
+<% article.tags.forEach(function(t){ %>
   <a href="/tags/<%= t.id %>">
     #<%= t.content %>
   </a>
@@ -14,7 +14,7 @@
 
 <hr />
 
-<form action="/posts/<%= post.id %>/comments" method="POST">
+<form action="/articles/<%= article.id %>/comments" method="POST">
   <h2>Add Comment</h2>
   <div class="form-group">
     <label>Name</label>
@@ -31,7 +31,7 @@
 
 <h2>Comments</h2>
 
-<% post.comments.forEach(function(comment, index) { %>
+<% article.comments.forEach((comment, index) => { %>
   <div class="well">
     <h4><%= comment.name %></h4>
     <p><%= comment.content %></p>
