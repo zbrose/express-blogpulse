@@ -1,9 +1,9 @@
-var express = require('express')
-var ejsLayouts = require('express-ejs-layouts')
-var db = require('./models')
-var moment = require('moment')
-var rowdy = require('rowdy-logger')
-var app = express()
+let express = require('express')
+let ejsLayouts = require('express-ejs-layouts')
+let db = require('./models')
+let moment = require('moment')
+let rowdy = require('rowdy-logger')
+let app = express()
 
 rowdy.begin(app)
 
@@ -15,18 +15,18 @@ app.use(ejsLayouts)
 app.use(express.static(__dirname + '/public/'))
 
 // middleware that allows us to access the 'moment' library in every EJS view
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   res.locals.moment = moment
   next()
 })
 
 // GET / - display all articles and their authors
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   db.article.findAll({
     include: [db.author]
-  }).then(function(articles) {
+  }).then((articles) => {
     res.render('main/index', { articles: articles })
-  }).catch(function(error) {
+  }).catch((error) => {
     console.log(error)
     res.status(400).render('main/404')
   })
@@ -36,7 +36,7 @@ app.get('/', function(req, res) {
 app.use('/authors', require('./controllers/authors'))
 app.use('/articles', require('./controllers/articles'))
 
-var server = app.listen(process.env.PORT || 3000, function() {
+var server = app.listen(process.env.PORT || 3000, () => {
   rowdy.print()
 })
 

@@ -16,7 +16,7 @@ We'll be using an existing application that includes two models, several routes,
   * Run `createdb blogpulse_dev` to create the database
   * Run `sequelize db:migrate` to run migrations
   * Run `sequelize db:seed:all` to populate the database with 2 authors and 2 articles
-* Use `nodemon` to start your application
+* Use `npx nodemon` (or just `nodemon` if you installed it globally) to start your application
 
 #### Read the Code
 
