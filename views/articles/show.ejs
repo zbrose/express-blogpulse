@@ -9,3 +9,16 @@
 <hr />
 
 <a href="/">&larr; Back Home</a>
+
+<form action="/articles/<%= article.id %>/comments" method="POST" >
+  Name: <input type="text" name="name" placeholder="Place your name here">
+  Comment: <input type="text" name="content">
+  <input type="submit">
+</form>
+
+<% article.comments.forEach(comment=>{ %>
+  <div>
+    <p><%= comment.content %></p>
+    <p>—<%= comment.name || 'Anonymous' %></p>
+  </div>
+<% }) %>
