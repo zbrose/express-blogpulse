@@ -108,14 +108,14 @@ Now, run the migration for the model and test the model's functionality. This ca
 **dbTest.js**
 
 ```js
-var db = require('./models')
+const db = require('./models')
 
 db.comment.create({
   name: 'Paul Allen',
   content: 'This is really neat! Thanks for posting.',
   articleId: 1
 })
-.then(function(comment) {
+.then(comment => {
   console.log(comment.get())
 })
 ```
@@ -123,12 +123,12 @@ db.comment.create({
 Be sure to also test querying comments off of articles, which should verify that the association exists. Here's an example, once you've created a comment:
 
 ```js
-var db = require('./models')
+const db = require('./models')
 
 db.article.findOne({
   where: { id: 1 },
   include: [db.comment]
-}).then(function(article) {
+}).then(article => {
   // by using eager loading, the article model should have a comments key
   console.log(article.comments)
 })
