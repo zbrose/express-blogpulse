@@ -60,43 +60,67 @@ Once this model has been created, **add the associations between comments the ar
 **models/article.js**
 
 ```js
-'use strict'
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const article = sequelize.define('article', {
+  class article extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      models.article.belongsTo(models.author)
+    }
+  }
+  article.init({
     title: DataTypes.STRING,
     content: DataTypes.TEXT,
     authorId: DataTypes.INTEGER
-  }, {})
-  article.associate = function(models) {
-    // associations can be defined here
-    models.article.belongsTo(models.author)
-  }
-  return article
-}
+  }, {
+    sequelize,
+    modelName: 'article',
+  });
+  return article;
+};
 ```
 
 **models/author.js**
 
 ```js
-'use strict'
+'use strict';
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  const author = sequelize.define('author', {
+  class author extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+      models.author.hasMany(models.article)
+    }
+    // instance mothods
+    getFullName(){
+      return this.firstName + ' ' + this.lastName
+    }
+  }
+  author.init({
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     bio: DataTypes.TEXT
-  }, {})
-
-  author.associate = function(models) {
-    // associations can be defined here
-    models.author.hasMany(models.article)
-  }
-
-  author.prototype.getFullName = function(){
-    return this.firstName + ' ' + this.lastName
-  }
-  return author
-}
-
+  }, {
+    sequelize,
+    modelName: 'author',
+  });
+  return author;
+};
 ```
 
 Go ahead and associate your new comments model and the existing article model in a similar fashion. This is a one to many relationship. One article can have many comments, but each comment belongs to a single article.
@@ -118,6 +142,22 @@ db.comment.create({
 .then(comment => {
   console.log(comment.get())
 })
+
+
+const createComment = async () => {
+  try {
+    const newComment = await db.comment.create({
+      name: 'Ada Lovelace',
+      content: 'So excited for this!',
+      articleId: 2
+    })
+    console.log(newComment)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+createComment()
 ```
 
 Be sure to also test querying comments off of articles, which should verify that the association exists. Here's an example, once you've created a comment:
@@ -132,6 +172,20 @@ db.article.findOne({
   // by using eager loading, the article model should have a comments key
   console.log(article.comments)
 })
+
+const readArticles = async () => {
+  try {
+    const article = await db.article.findOne({
+      where: { id: 2},
+      include: [db.author]
+    })
+    console.log(article)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+readArticles()
 ```
 
 #### Part 2: Integrate the model with the app
