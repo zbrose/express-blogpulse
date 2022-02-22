@@ -1,10 +1,11 @@
-let express = require('express')
-let ejsLayouts = require('express-ejs-layouts')
-let db = require('./models')
-let moment = require('moment')
-let rowdy = require('rowdy-logger')
-let app = express()
+const express = require('express')
+const ejsLayouts = require('express-ejs-layouts')
+const db = require('./models')
+const moment = require('moment')
+const rowdy = require('rowdy-logger')
 
+const app = express()
+const port = process.env.PORT || 3000
 rowdy.begin(app)
 
 app.set('view engine', 'ejs')
@@ -35,8 +36,7 @@ app.get('/', (req, res) => {
 app.use('/authors', require('./controllers/authors'))
 app.use('/articles', require('./controllers/articles'))
 
-var server = app.listen(process.env.PORT || 3000, () => {
+app.listen(port, () => {
   rowdy.print()
+  console.log(`listening on port ${port}`)
 })
-
-module.exports = server
