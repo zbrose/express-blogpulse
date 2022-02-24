@@ -39,4 +39,4 @@ app.use('/articles', require('./controllers/articles'))
 app.listen(port, () => {
   rowdy.print()
   console.log(`listening on port ${port}`)
-})
+}) 
